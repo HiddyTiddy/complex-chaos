@@ -1,6 +1,9 @@
+use std::fs::File;
+use std::io::{Error, Write};
+
 use num::Complex;
 const FIRST_TERM: Complex<f64> = Complex::new(0.2, 0.0);
-const ITERATIONS: usize = 500;
+const ITERATIONS: usize = 1000;
 
 const END_VALUES: usize = 100;
 const STARTING_ELEMENT_INDEX: usize = ITERATIONS - END_VALUES;
@@ -63,7 +66,7 @@ fn chaos(lamb: Complex<f64>) -> u8 {
     counter(series_l)
 }
 
-fn main() {
+fn main() -> Result<(), Error> {
     const VERTICAL_PRECISION: usize = 1549;
     const HORIZONTAL_PRECISION: usize = 4000;
 
@@ -85,11 +88,13 @@ fn main() {
         }
     }
 
+    let mut output = File::create("dump")?;
     for i in 0..VERTICAL_PRECISION {
         let mut line = "".to_string();
         for j in 0..HORIZONTAL_PRECISION {
             line += &format!("{},", im_array[i][j]);
         }
-        println!("{}", line);
+        writeln!(output, "{}", line)?;
     }
+    Ok(())
 }
